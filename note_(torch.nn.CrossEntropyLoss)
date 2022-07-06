@@ -1,0 +1,20 @@
+Here is a note for common used loss function:
+  1. torch.nn.CrossEntropyLoss
+  2. torch.nn.CrossEntropyLoss2d
+  
+First, we should know, this cross entropy loss is usually used to evaluate the performance of classification task.
+
+For example, if we want model to predict the categories of inputs and there are 5 categories in total. 
+
+labels = tensor([1, 0, 4]), assume batch size is 3.
+predict = tensor([[p11, p12, p13, p14, p15],
+                  [p21, p22, p23, p24, p25],
+                  [p31, p32, p33, p34, p35]]), 1st dimension is batch size and 2nd dimension is class numbers.
+               
+we need a softmax layer for predict from linear layer to make pi1-pi5 to a probability distribution.
+Then, we need a log operation: log-prob = log(softmax(predict))
+
+This log-prob would be sent to NLLLoss() to calculate the cross entropy loss for multiple classes.
+That is to say, there is no log operation in NLLLoss(), it only does -p_true*p_pred, where p_pred should already be logged.
+
+nn.CrossEntropyLoss() combines nn.LogSoftmax() (log(softmax()) and nn.NLLLoss()
