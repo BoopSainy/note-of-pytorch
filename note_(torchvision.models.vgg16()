@@ -1,0 +1,20 @@
+In recent version, the parameter "pretrained" is deprecated. 
+
+If we want to use pretrained model (VGG, ResNet ...), we should use parameter "weights".
+
+For randomly initialized weights, the code would be:
+
+
+
+-- code:
+
+from torchvision.models import VGG16_Weights
+
+vggnet = torchvision.models.vgg16(weights = None)
+
+
+# if we want a pretrained vgg16 net, code should be
+
+-- code
+
+vggnet = torchvision.models.vgg16(weights = VGG16_Weights.IMAGENET1K_V1)
