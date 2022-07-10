@@ -1,0 +1,49 @@
+这里将简单记录一下super()在类的继承中的使用。
+
+class Person(Object):
+  def __init__(self, name):
+    self.name = name
+
+class Male(Person):
+  def __init__(self, name, age):
+    super().__init__(name)
+    self.age = age
+
+这里我们可以看到Male类继承了父类Person，在Male的构造方法中，Male类试图继承Person类的构造方法。
+Male类的构造方法展开变成了:
+  def __init(self, name, age):
+    self.name = name <- 继承自 super().__init__(name)
+    self.age = age
+    
+那么super()这里的功能是什么呢？ 它其实隐藏了两个参数，展开的话应该是super(Male, self).__init__(name)
+其中第二个参数self是想说明，这里要使用self(Male)类/对象的继承链，也就是Male Person Object。而第一个参数Male则是想说明
+我们在继承链中要以Male为基准，在Male之后的父类中依次寻找__init__()方法，直到找到为之
+
+
+再看一个例子：
+class Animal(Object):
+  def __init__(self, age):
+    self.age
+
+class Person(Animal):
+  def __init__(self, name, age):
+    super(Person, self).__init__(age)
+    self.name
+
+class Male(Person):
+  def __init__(self, name, age):
+    super(Person, self).__init__(name, age)
+    self.gender = "male"
+    
+m = Male("lsy", 25)
+这时会报错，因为在Male类的构造方法中，它试图继承一个__init__(name, age)方法，但是继承的位置出现了错误，它使用了Male实例对象的
+继承链：Male-Person-Animal-Object，但是呢，却把基准定到Person处，也就是说它将从Anmial开始往后挨个寻找__init__()方法。
+于是便可以在Animal类中找到__init__()方法，但是Animal类的构造方法并不支持两个params，所以报错了。
+
+正确的应把 Male类构造方法中的第一行改为 super(Male, self).__init__(name, age) / super().__init__(name, age)
+
+
+总结：
+当我们试图用super()来让子类去继承使用父类的方法时，需要理解super()的两个参数，第二个决定了使用谁的继承链，第一个参数决定了在继承链
+中开始查找目标方法的基准。
+  
