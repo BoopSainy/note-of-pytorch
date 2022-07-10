@@ -56,3 +56,20 @@ frame_adjusted = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)操作调整通道顺序�
 
 二. 接着是将ndarray写成video
 
+  该步骤的主要流程为，创建一个Video_Writer的instance，接着使用该instance的write()方法来循环将每一帧dimension为：height, width, channels的
+frame(ndarray)写入至指定的目录。这里的channel顺序需要调整为BGR
+  Common code:
+  # if video_array is in dimension: channel, frames, height, width
+  c, _, height, width = video_array.shape
+  
+  # determine the fourcc which would determine the type of video file
+  fourcc = cv2.VideoWriter_fourcc(*"MJPG") # or cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), would create a .mp4 video file
+  
+  # create the instance of VideoWriter:
+  out = cv2.VideoWriter(filename, fourcc, fps, (height, width)) # filename is the path for output video
+  
+  for frame in video_array.transpose((1, 2, 3, 0)):
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    out.write(frame)
+   
+  out.release()
